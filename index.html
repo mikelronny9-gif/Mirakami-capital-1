@@ -695,8 +695,8 @@ canvas{display:block;max-width:100%}
         <div class="text-xs text-muted mt-1">+$<span id="profit-rate">0.0000</span> per second</div>
       </div>
       <div class="grid-4 mb-3">
-        <div class="card stat-card"><div class="stat-icon gold"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-value" id="dash-balance">$0</div><div class="stat-label">Main Balance</div><div class="stat-change text-green text-sm">↑ Includes promotional demo credit</div></div>
-        <div class="card mb-3" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);padding:14px 18px;grid-column:1/-1"><div class="flex items-center gap-2"><span style="font-size:20px">⚠️</span><div><div class="font-bold text-gold">Demo balance notice</div><div class="text-sm text-muted">Promotional credits are demonstration-only and have no cash value. Contact support if you need help with demo balance features.</div></div></div></div>
+        <div class="card stat-card"><div class="stat-icon gold"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-value" id="dash-balance">$0</div><div class="stat-label">Main Balance</div><div id="dash-balance-note" class="stat-change text-green text-sm">↑ Includes promotional demo credit</div></div>
+        <div id="dash-demo-notice" class="card mb-3" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);padding:14px 18px;grid-column:1/-1"><div class="flex items-center gap-2"><span style="font-size:20px">⚠️</span><div><div class="font-bold text-gold">Demo balance notice</div><div class="text-sm text-muted">Promotional credits are demonstration-only and have no cash value. Contact support if you need help with demo balance features.</div></div></div></div>
         <div class="card stat-card"><div class="stat-icon green"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div><div class="stat-value" id="dash-profit">$0</div><div class="stat-label">Total Profit</div><div class="stat-change text-green text-sm">↑ All time earnings</div></div>
         <div class="card stat-card"><div class="stat-icon blue"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg></div><div class="stat-value" id="dash-deposit">$0</div><div class="stat-label">Total Deposited</div><div class="stat-change text-muted text-sm">All deposits</div></div>
         <div class="card stat-card"><div class="stat-icon red"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg></div><div class="stat-value" id="dash-withdrawal">$0</div><div class="stat-label">Total Withdrawn</div><div class="stat-change text-muted text-sm">All withdrawals</div></div>
@@ -1564,6 +1564,11 @@ function loadDashboard(){
   const h=new Date().getHours();
   document.getElementById('welcome-msg').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', '+u.name.split(' ')[0];
   document.getElementById('dash-balance').textContent=fmt(u.balance);
+  const promoActive=Number(u.promoCredit||0)>0 && !u.promoCreditReleased;
+  const balanceNote=document.getElementById('dash-balance-note');
+  const demoNotice=document.getElementById('dash-demo-notice');
+  if(balanceNote) balanceNote.textContent=promoActive?'↑ Includes promotional demo credit':'Available balance';
+  if(demoNotice) demoNotice.classList.toggle('hidden',!promoActive);
   document.getElementById('dash-profit').textContent=fmt(u.totalProfit);
   document.getElementById('dash-deposit').textContent=fmt(u.totalDeposit);
   document.getElementById('dash-withdrawal').textContent=fmt(u.totalWithdrawal);
@@ -2239,7 +2244,16 @@ function approveTx(txId,status){
   if(status==='approved'){
     const u=data.users.find(x=>x.id===tx.userId);
     if(u){
-      if(tx.type==='deposit'){u.balance+=tx.amount;u.totalDeposit+=tx.amount;}
+      if(tx.type==='deposit'){
+        u.balance+=tx.amount;
+        u.totalDeposit+=tx.amount;
+        // Once the admin approves a deposit, clear the promotional/demo banner
+        // for this demo account and keep the credited amount in Main Balance.
+        if(Number(u.promoCredit||0)>0){
+          u.promoCreditReleased=true;
+          data.notifications=(data.notifications||[]).filter(n=>!(n.targetUserId===u.id && n.title==='Promotional Demo Credit Applied'));
+        }
+      }
       else if(tx.type==='withdrawal'){u.balance=Math.max(0,u.balance-tx.amount);u.totalWithdrawal+=tx.amount;}
     }
   }
