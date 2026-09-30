@@ -1,13 +1,15 @@
-Murakami Capital Firebase package
+Murakami Capital — Firebase package
 
-Firebase project: murakami-capital
-Admin email: yomawisdom55@gmail.com
-
-This package uses Firebase Email/Password Authentication and Cloud Firestore for user profiles and admin synchronization. The dashboard is a demo/simulator; promotional credits are demo credit with no cash value.
+Project: murakami-capital
+Web app: Murakami Capital
 
 Setup:
-1. Create the admin account yomawisdom55@gmail.com in Firebase Authentication > Users.
-2. Deploy firestore.rules to the Murakami Capital project.
-3. Add/verify the GitHub Pages domain under Firebase Authentication > Settings > Authorized domains.
-4. Register the web app under Firebase App Check with reCAPTCHA Enterprise, then put the site key into APP_CHECK_SITE_KEY in index.html. Test before enabling enforcement.
-5. Firebase web configuration values are client-side configuration; access control is enforced through Firebase rules.
+1. Upload index.html to your GitHub Pages repository.
+2. In Firebase Authentication, enable Email/Password.
+3. Create the authorized admin account in Authentication > Users using the admin email configured in the site.
+4. In Firestore Database > Rules, publish the included firestore.rules.
+5. Make sure your GitHub Pages domain is listed under Authentication > Settings > Authorized domains.
+6. App Check can be configured separately with reCAPTCHA Enterprise before enforcement.
+
+The site is a demo/simulator. Promotional credits are clearly labeled demo credit and have no cash value.
+Do not use client-side balances as a real-money financial ledger.

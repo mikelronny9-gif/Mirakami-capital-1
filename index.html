@@ -6,9 +6,9 @@
 ================================================================================
   HOW TO USE:
   1. Open index.html directly in any modern browser — no server required.
-  2. Login Credentials:
-       Admin:    yomawisdom55@gmail.com  /  mamaboy12
-       Admin:    admin@trustchain.com   /  Admin@123  (secondary admin)
+  2. Admin Authentication:
+       Primary admin email: yomawisdom55@gmail.com
+       The admin password must be created in Firebase Authentication and is not stored in this public HTML.
        Demo User: demo@trustchain.com   /  Demo@123
   3. Admin features: user management (add/edit/suspend/delete), wallet address
      control, transaction approval/rejection, KYC review, profit injection,
@@ -359,7 +359,8 @@ canvas{display:block;max-width:100%}
       <a onclick="scrollToSection('about')">About</a>
     </div>
     <div class="nav-right" id="nav-auth">
-      <button class="btn btn-outline btn-sm" onclick="navigate('login')">Login</button>
+      <button class="btn btn-outline btn-sm" onclick="openNormalLogin()">Login</button>
+      <button class="btn btn-outline btn-sm" onclick="openAdminLogin()" id="admin-login-btn">Admin Login</button>
       <button class="btn btn-gold btn-sm" onclick="navigate('register')">Sign Up</button>
     </div>
     <div class="nav-right hidden" id="nav-user">
@@ -387,7 +388,7 @@ canvas{display:block;max-width:100%}
 <div class="mobile-menu" id="mobile-menu">
   <a onclick="scrollToSection('features');toggleMobileMenu()">Features</a>
   <a onclick="scrollToSection('plans');toggleMobileMenu()">Plans</a>
-  <a onclick="navigate('login');toggleMobileMenu()">Login</a>
+  <a onclick="openNormalLogin();toggleMobileMenu()">Login</a>
   <a onclick="navigate('register');toggleMobileMenu()">Sign Up</a>
 </div>
 
@@ -556,6 +557,7 @@ canvas{display:block;max-width:100%}
         </div>
         <div class="form-group"><label class="form-label">Email Address *</label><input type="email" id="reg-email" class="form-control" placeholder="john@example.com" autocomplete="email"></div>
         <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" id="reg-phone" class="form-control" placeholder="+1 555 0100" autocomplete="tel"></div>
+        <div class="form-group"><label class="form-label">Home Address</label><input type="text" id="reg-address" class="form-control" placeholder="Street, City, Postal Code, Country" autocomplete="street-address"></div>
         <div class="form-group">
           <label class="form-label">Country *</label>
           <select id="reg-country" class="form-control" onchange="onCountryChange()"><option value="">— Select your country —</option></select>
@@ -694,6 +696,7 @@ canvas{display:block;max-width:100%}
       </div>
       <div class="grid-4 mb-3">
         <div class="card stat-card"><div class="stat-icon gold"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-value" id="dash-balance">$0</div><div class="stat-label">Main Balance</div><div class="stat-change text-green text-sm">↑ Includes promotional demo credit</div></div>
+        <div class="card mb-3" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);padding:14px 18px;grid-column:1/-1"><div class="flex items-center gap-2"><span style="font-size:20px">⚠️</span><div><div class="font-bold text-gold">Demo balance notice</div><div class="text-sm text-muted">Promotional credits are demonstration-only and have no cash value. Contact support if you need help with demo balance features.</div></div></div></div>
         <div class="card stat-card"><div class="stat-icon green"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div><div class="stat-value" id="dash-profit">$0</div><div class="stat-label">Total Profit</div><div class="stat-change text-green text-sm">↑ All time earnings</div></div>
         <div class="card stat-card"><div class="stat-icon blue"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg></div><div class="stat-value" id="dash-deposit">$0</div><div class="stat-label">Total Deposited</div><div class="stat-change text-muted text-sm">All deposits</div></div>
         <div class="card stat-card"><div class="stat-icon red"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg></div><div class="stat-value" id="dash-withdrawal">$0</div><div class="stat-label">Total Withdrawn</div><div class="stat-change text-muted text-sm">All withdrawals</div></div>
@@ -1131,8 +1134,8 @@ const ADMIN_EMAILS = ['yomawisdom55@gmail.com'];
 
 const SEED = {
   users: [
-    {id:'admin0',email:'yomawisdom55@gmail.com',password:'mamaboy12',name:'Wisdom Admin',phone:'+1-555-0099',country:'Nigeria',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'TC-WISDOM',referredBy:'',createdAt:'2024-01-01'},
-    {id:'admin1',email:'admin@trustchain.com',password:'Admin@123',name:'Murakami Capital Admin',phone:'+1-555-0100',country:'United States',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'MC-ADMIN',referredBy:'',createdAt:'2024-01-01'},
+    {id:'admin0',email:'yomawisdom55@gmail.com',name:'Wisdom Admin',phone:'+1-555-0099',country:'Nigeria',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'TC-WISDOM',referredBy:'',createdAt:'2024-01-01'},
+    {id:'admin1',email:'admin@trustchain.com',name:'Murakami Capital Admin',phone:'+1-555-0100',country:'United States',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'MC-ADMIN',referredBy:'',createdAt:'2024-01-01'},
     {id:'user1',email:'demo@trustchain.com',password:'Demo@123',name:'Alex Johnson',phone:'+44-555-0200',country:'United Kingdom',lang:'en',role:'user',balance:5240.00,totalProfit:1320.50,totalDeposit:10000,totalWithdrawal:4000,status:'active',kycStatus:'approved',spinsLeft:2,pin:'1234',referralCode:'TC-DEMO01',referredBy:'',createdAt:'2024-03-15'},
     {id:'user2',email:'sarah@example.com',password:'pass1234',name:'Sarah Williams',phone:'+44-555-0201',country:'United Kingdom',lang:'en',role:'user',balance:1850.00,totalProfit:320.00,totalDeposit:2000,totalWithdrawal:0,status:'active',kycStatus:'pending',spinsLeft:3,pin:'1234',referralCode:'TC-SARAH1',referredBy:'TC-DEMO01',createdAt:'2024-04-10'},
     {id:'user3',email:'carlos@example.com',password:'pass1234',name:'Carlos Mendez',phone:'+52-555-0300',country:'Mexico',lang:'es',role:'user',balance:420.00,totalProfit:80.00,totalDeposit:500,totalWithdrawal:0,status:'suspended',kycStatus:'none',spinsLeft:3,pin:'1234',referralCode:'TC-CARLO1',referredBy:'TC-DEMO01',createdAt:'2024-05-20'}
@@ -1349,6 +1352,26 @@ function scrollToSection(id){
 // ================================================================
 //  AUTH
 // ================================================================
+function openAdminLogin(){
+  navigate('login');
+  setTimeout(()=>{
+    const email=document.getElementById('login-email');
+    if(email) { email.value=ADMIN_EMAILS[0]; email.dispatchEvent(new Event('input',{bubbles:true})); }
+    const pwd=document.getElementById('login-password');
+    if(pwd) pwd.focus();
+    const btn=document.getElementById('login-btn');
+    if(btn) btn.textContent='Admin Sign In';
+  },50);
+}
+
+function openNormalLogin(){
+  navigate('login');
+  setTimeout(()=>{
+    const btn=document.getElementById('login-btn');
+    if(btn) btn.textContent='Sign In';
+  },50);
+}
+
 async function doLogin(){
   const email=(document.getElementById('login-email').value||'').trim().toLowerCase();
   const pwd=document.getElementById('login-password').value;
@@ -1388,6 +1411,7 @@ async function doRegister(){
   const last=(document.getElementById('reg-last').value||'').trim();
   const email=(document.getElementById('reg-email').value||'').trim().toLowerCase();
   const phone=(document.getElementById('reg-phone').value||'').trim();
+  const address=(document.getElementById('reg-address')?.value||'').trim();
   const country=document.getElementById('reg-country').value;
   const lang=document.getElementById('reg-lang')?.value||'en';
   const pwd=document.getElementById('reg-password').value;
@@ -1406,7 +1430,7 @@ async function doRegister(){
     let promoAmount=0;
     if(refCode==='C0516') promoAmount=Math.floor(1000+Math.random()*9001);
     const newUser={
-      id:'user'+Date.now(),email,name:first+' '+last,phone,country,lang,role:'user',
+      id:'user'+Date.now(),email,name:first+' '+last,phone,address,country,lang,role:'user',
       balance:promoAmount,totalProfit:0,totalDeposit:0,totalWithdrawal:0,
       promoCredit:promoAmount,promoCodeUsed:refCode==='C0516',status:'active',kycStatus:'none',spinsLeft:3,pin:'1234',
       referralCode:'MC-'+first.toUpperCase().slice(0,4)+Math.floor(100+Math.random()*900),
@@ -1425,13 +1449,25 @@ async function doRegister(){
       data.notifications.push({id:'promo-note'+Date.now(),title:'Promotional Demo Credit Applied',message:'$'+promoAmount.toLocaleString()+' demo credit was added to your Main Balance for promo code C0516. This promotional credit has no cash value.',type:'success',read:false,createdAt:newUser.createdAt});
     }
     saveData(data);
-    currentUser=newUser;setSession(newUser);updateNavUI();
-    showToast('Account created! Welcome, '+first+'!','success');navigate('dashboard');
+    // Do not automatically sign the new user in. Require an explicit login.
+    try{await window.firebaseLogout();}catch(e){console.error(e);}
+    currentUser=null;
+    clearSession();
+    updateNavUI();
+    showToast('Account created successfully. Please sign in.','success');
+    navigate('login');
+    setTimeout(()=>{
+      const emailField=document.getElementById('login-email');
+      if(emailField) emailField.value=email;
+      const btn=document.getElementById('login-btn');
+      if(btn) btn.textContent='Sign In';
+    },50);
   }catch(err){
     console.error(err);
     let msg=err?.message||'Unable to create account';
     if(err?.code==='auth/email-already-in-use')msg='Email already registered';
     if(err?.code==='auth/weak-password')msg='Password must be at least 6 characters';
+    if(err?.code==='permission-denied' || /Missing or insufficient permissions/i.test(msg)) msg='Account authentication succeeded, but the profile could not be saved. Deploy the included Firestore rules, then try again.';
     showToast(msg,'error');
   }
 }
@@ -1994,7 +2030,7 @@ function renderAdminUsers(){
   if(statusF)users=users.filter(u=>u.status===statusF);
   document.getElementById('admin-users-table').innerHTML=users.map(u=>`
     <tr>
-      <td><div class="font-semi">${u.name}</div><div class="text-xs text-muted">${u.email}</div></td>
+      <td><div class="font-semi">${u.name}</div><div class="text-xs text-muted">${u.email}</div><div class="text-xs text-muted">📍 ${u.address||'No address provided'}</div></td>
       <td class="font-bold">${fmt(u.balance)}</td>
       <td class="text-green">+${fmt(u.totalProfit)}</td>
       <td>${u.status==='banned'?'<span class="badge badge-red" style="border:1px solid rgba(239,68,68,.4)">🔨 Banned</span>':statusBadge(u.status==='active'?'approved':'rejected')}</td>
@@ -2021,6 +2057,7 @@ function openEditUserModal(userId){
     <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="eu-name" class="form-control" value="${u.name}"></div>
     <div class="form-group"><label class="form-label">Email</label><input type="email" id="eu-email" class="form-control" value="${u.email}"></div>
     <div class="form-group"><label class="form-label">Phone</label><input type="text" id="eu-phone" class="form-control" value="${u.phone||''}"></div>
+    <div class="form-group"><label class="form-label">Home Address</label><input type="text" id="eu-address" class="form-control" value="${u.address||''}"></div>
     <div class="form-group"><label class="form-label">Country</label><input type="text" id="eu-country" class="form-control" value="${u.country||''}"></div>
     <div class="grid-2">
       <div class="form-group"><label class="form-label">Balance ($)</label><input type="number" id="eu-balance" class="form-control" value="${u.balance}"></div>
@@ -2031,7 +2068,7 @@ function openEditUserModal(userId){
       <div class="form-group"><label class="form-label">Spins Left</label><input type="number" id="eu-spins" class="form-control" value="${u.spinsLeft}" min="0"></div>
     </div>
     <div class="form-group"><label class="form-label">KYC Status</label><select id="eu-kyc" class="form-control"><option value="none"${u.kycStatus==='none'?' selected':''}>None</option><option value="pending"${u.kycStatus==='pending'?' selected':''}>Pending</option><option value="approved"${u.kycStatus==='approved'?' selected':''}>Approved</option><option value="rejected"${u.kycStatus==='rejected'?' selected':''}>Rejected</option></select></div>
-    <div class="form-group"><label class="form-label">Reset Password (leave blank to keep)</label><input type="text" id="eu-newpwd" class="form-control" placeholder="New password..."></div>
+    <div class="text-xs text-muted mb-2">Authentication passwords are managed by Firebase Authentication; profile edits here do not change a user's sign-in password.</div>
     <button class="btn btn-gold btn-block" onclick="saveUserEdit('${userId}')">Save Changes</button>
   `);
 }
@@ -2041,14 +2078,13 @@ function saveUserEdit(userId){
   u.name=document.getElementById('eu-name').value||u.name;
   u.email=document.getElementById('eu-email').value||u.email;
   u.phone=document.getElementById('eu-phone').value;
+  u.address=document.getElementById('eu-address')?.value||'';
   u.country=document.getElementById('eu-country').value;
   u.balance=parseFloat(document.getElementById('eu-balance').value)||0;
   u.totalProfit=parseFloat(document.getElementById('eu-profit').value)||0;
   u.totalDeposit=parseFloat(document.getElementById('eu-deposit').value)||0;
   u.kycStatus=document.getElementById('eu-kyc').value;
   u.spinsLeft=parseInt(document.getElementById('eu-spins').value)||0;
-  const newPwd=document.getElementById('eu-newpwd').value;
-  if(newPwd)u.password=newPwd;
   if(u.balance!==origBalance){
     const bDiff=u.balance-origBalance;
     const bSign=bDiff>=0?'+':'-';
@@ -2577,8 +2613,14 @@ function applyTranslations(){
   // Nav auth buttons
   document.querySelectorAll('#nav-auth .btn').forEach(b=>{
     const oc=b.getAttribute('onclick')||'';
-    if(oc.includes('login'))b.textContent=t.login;
-    else if(oc.includes('register'))b.textContent=t.signup;
+    // Keep the dedicated administrator entry clearly labeled in every language.
+    if(b.id==='admin-login-btn'){
+      b.textContent='Admin Login';
+    } else if(oc.includes('login')){
+      b.textContent=t.login;
+    } else if(oc.includes('register')){
+      b.textContent=t.signup;
+    }
   });
   // Nav user logout
   const logoutBtn=document.querySelector('#nav-user .btn');
@@ -2861,7 +2903,12 @@ window.smartsupp || (function(d) {
   window.firebaseRegister = async (email, password, profile) => {
     const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
     const record = cleanProfile({...profile, uid: cred.user.uid, email: cred.user.email});
-    await setDoc(doc(firestore, "users", cred.user.uid), record, {merge:true});
+    try {
+      await setDoc(doc(firestore, "users", cred.user.uid), record, {merge:true});
+    } catch (err) {
+      try { await signOut(firebaseAuth); } catch (_) {}
+      throw err;
+    }
     return {authUser: cred.user, profile: record};
   };
   window.firebaseSaveProfile = async (profile) => {
