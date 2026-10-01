@@ -695,12 +695,12 @@ canvas{display:block;max-width:100%}
         <div class="text-xs text-muted mt-1">+$<span id="profit-rate">0.0000</span> per second</div>
       </div>
       <div class="grid-4 mb-3">
-        <div class="card stat-card"><div class="stat-icon gold"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-value" id="dash-balance">$0</div><div class="stat-label">Main Balance</div><div id="dash-balance-note" class="stat-change text-green text-sm">↑ Includes promotional demo credit</div></div>
-        <div id="dash-demo-notice" class="card mb-3" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);padding:14px 18px;grid-column:1/-1"><div class="flex items-center gap-2"><span style="font-size:20px">⚠️</span><div><div class="font-bold text-gold">Demo balance notice</div><div class="text-sm text-muted">Promotional credits are demonstration-only and have no cash value. Contact support if you need help with demo balance features.</div></div></div></div>
+        <div class="card stat-card"><div class="stat-icon gold"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-value" id="dash-balance">$0</div><div class="stat-label">Main Balance</div><div id="dash-balance-note" class="stat-change text-green text-sm">Available balance</div></div>
+        <div class="card stat-card"><div class="stat-icon blue"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg></div><div class="stat-value" id="dash-deposit">$0</div><div class="stat-label">Total Deposit</div><div class="stat-change text-muted text-sm">Admin-adjusted deposits</div></div>
         <div class="card stat-card"><div class="stat-icon green"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div><div class="stat-value" id="dash-profit">$0</div><div class="stat-label">Total Profit</div><div class="stat-change text-green text-sm">↑ All time earnings</div></div>
-        <div class="card stat-card"><div class="stat-icon blue"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg></div><div class="stat-value" id="dash-deposit">$0</div><div class="stat-label">Total Deposited</div><div class="stat-change text-muted text-sm">All deposits</div></div>
         <div class="card stat-card"><div class="stat-icon red"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg></div><div class="stat-value" id="dash-withdrawal">$0</div><div class="stat-label">Total Withdrawn</div><div class="stat-change text-muted text-sm">All withdrawals</div></div>
       </div>
+      <div id="dash-demo-notice" class="card mb-3" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);padding:14px 18px"><div class="flex items-center gap-2"><span style="font-size:20px">⚠️</span><div><div class="font-bold text-gold">Demo balance pending admin approval</div><div class="text-sm text-muted">Promotional demo credit is not included in Main Balance until an administrator accepts it. This is demonstration-only and has no cash value.</div></div></div></div>
       <div class="grid-2 mb-3">
         <div class="card">
           <div class="flex justify-between items-center mb-2">
@@ -974,7 +974,7 @@ canvas{display:block;max-width:100%}
           </div>
           <div class="card mb-2">
             <h3 class="font-semi mb-2">Display Settings</h3>
-            <div class="form-group"><label class="form-label">Currency Display</label><select class="form-control"><option>USD ($)</option><option>EUR (€)</option><option>GBP (£)</option></select></div>
+            <div class="form-group"><label class="form-label">Currency Display</label><select id="currency-display" class="form-control" disabled><option value="USD">USD</option></select><div class="text-xs text-muted" style="margin-top:6px">Currency changes automatically from your country/language.</div></div>
             <div class="form-group mb-0"><label class="form-label">Timezone</label><select class="form-control"><option>UTC+0</option><option>UTC-5 (EST)</option><option>UTC+1 (WAT)</option><option>UTC+3 (EAT)</option><option>UTC+8 (SGT)</option></select></div>
           </div>
           <div class="card mb-2" id="settings-lang-card">
@@ -1071,24 +1071,49 @@ canvas{display:block;max-width:100%}
       <div id="admin-kyc-list"></div>
     </div>
 
-    <!-- ADMIN PROFITS -->
+    <!-- ADMIN PROFITS / BALANCES -->
     <div id="section-admin-profits" class="app-section hidden">
-      <div class="page-header"><h1 class="page-title">Add Profit / Adjust Balance</h1><p class="page-subtitle">Manually credit profit or set user account balance</p></div>
-      <div class="grid-2">
+      <div class="page-header"><h1 class="page-title">Balances &amp; Profit</h1><p class="page-subtitle">Admin-only controls for demo credit approval, main balance, deposit total, and profit.</p></div>
+      <div class="grid-3">
+        <div class="card">
+          <h3 class="font-semi mb-2">Approve Demo Credit</h3>
+          <p class="text-muted text-sm mb-2">Accept a user's pending promotional demo credit and move it into Main Balance. It does not increase Total Deposit.</p>
+          <div class="form-group"><label class="form-label">Select User</label><select id="promo-user" class="form-control"></select></div>
+          <div id="promo-preview" class="text-sm text-muted mb-2"></div>
+          <button class="btn btn-gold btn-block" onclick="acceptPromoCredit()">✓ Accept &amp; Add to Main Balance</button>
+        </div>
+        <div class="card">
+          <h3 class="font-semi mb-2">Set Main Balance</h3>
+          <div class="form-group"><label class="form-label">Select User</label><select id="bal-user" class="form-control" onchange="syncBalanceEditor()"></select></div>
+          <div class="form-group"><label class="form-label">Main Balance (USD)</label><input type="number" id="bal-amount" class="form-control" placeholder="0.00" min="0" step="0.01"></div>
+          <div class="form-group"><label class="form-label">Reason</label><input type="text" id="bal-reason" class="form-control" placeholder="Reason for adjustment"></div>
+          <button class="btn btn-gold btn-block" onclick="setBalance()">Save Main Balance</button>
+        </div>
+        <div class="card">
+          <h3 class="font-semi mb-2">Set Total Deposit</h3>
+          <div class="form-group"><label class="form-label">Select User</label><select id="deposit-user" class="form-control" onchange="syncDepositEditor()"></select></div>
+          <div class="form-group"><label class="form-label">Total Deposit (USD)</label><input type="number" id="deposit-amount" class="form-control" placeholder="0.00" min="0" step="0.01"></div>
+          <div class="form-group"><label class="form-label">Reason</label><input type="text" id="deposit-reason" class="form-control" placeholder="Reason for adjustment"></div>
+          <button class="btn btn-blue btn-block" onclick="setTotalDeposit()">Save Total Deposit</button>
+        </div>
+      </div>
+      <div class="grid-2 mt-3">
         <div class="card">
           <h3 class="font-semi mb-2">Credit Profit to User</h3>
           <div class="form-group"><label class="form-label">Select User</label><select id="profit-user" class="form-control"></select></div>
-          <div class="form-group"><label class="form-label">Amount (USD)</label><input type="number" id="profit-amount" class="form-control" placeholder="0.00" min="0"></div>
+          <div class="form-group"><label class="form-label">Amount (USD)</label><input type="number" id="profit-amount" class="form-control" placeholder="0.00" min="0" step="0.01"></div>
           <div class="form-group"><label class="form-label">Source</label><select id="profit-source" class="form-control"><option value="admin">Manual Credit</option><option value="investment">Investment Return</option><option value="bonus">Bonus</option></select></div>
-          <div class="form-group"><label class="form-label">Description</label><input type="text" id="profit-desc" class="form-control" placeholder="e.g. Gold Plan 20% ROI"></div>
+          <div class="form-group"><label class="form-label">Description</label><input type="text" id="profit-desc" class="form-control" placeholder="e.g. Investment return"></div>
           <button class="btn btn-green btn-block" onclick="addProfit()">Credit Profit</button>
         </div>
         <div class="card">
-          <h3 class="font-semi mb-2">Set Account Balance</h3>
-          <div class="form-group"><label class="form-label">Select User</label><select id="bal-user" class="form-control"></select></div>
-          <div class="form-group"><label class="form-label">New Balance (USD)</label><input type="number" id="bal-amount" class="form-control" placeholder="0.00" min="0"></div>
-          <div class="form-group"><label class="form-label">Reason</label><input type="text" id="bal-reason" class="form-control" placeholder="Reason for adjustment"></div>
-          <button class="btn btn-gold btn-block" onclick="setBalance()">Set Balance</button>
+          <h3 class="font-semi mb-2">Admin Balance Rules</h3>
+          <div class="text-sm text-muted" style="line-height:1.8">
+            <div>• <strong>Main Balance</strong> is controlled by admin approval or admin adjustment.</div>
+            <div>• <strong>Total Deposit</strong> is separate and can be adjusted by admin.</div>
+            <div>• <strong>Demo credit</strong> stays pending until admin accepts it.</div>
+            <div>• Accepting demo credit does not create a deposit transaction.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1136,7 +1161,7 @@ const SEED = {
   users: [
     {id:'admin0',email:'yomawisdom55@gmail.com',name:'Wisdom Admin',phone:'+1-555-0099',country:'Nigeria',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'TC-WISDOM',referredBy:'',createdAt:'2024-01-01'},
     {id:'admin1',email:'admin@trustchain.com',name:'Murakami Capital Admin',phone:'+1-555-0100',country:'United States',lang:'en',role:'admin',balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,status:'active',kycStatus:'approved',spinsLeft:99,pin:'1234',referralCode:'MC-ADMIN',referredBy:'',createdAt:'2024-01-01'},
-    {id:'user1',email:'demo@trustchain.com',password:'Demo@123',name:'Alex Johnson',phone:'+44-555-0200',country:'United Kingdom',lang:'en',role:'user',balance:5240.00,totalProfit:1320.50,totalDeposit:10000,totalWithdrawal:4000,status:'active',kycStatus:'approved',spinsLeft:2,pin:'1234',referralCode:'TC-DEMO01',referredBy:'',createdAt:'2024-03-15'},
+    {id:'user1',email:'demo@trustchain.com',password:'Demo@123',name:'Alex Johnson',phone:'+44-555-0200',country:'United Kingdom',lang:'en',role:'user',balance:5240.00,totalProfit:1320.50,totalDeposit:10000,totalWithdrawal:4000,promoCredit:0,promoCreditReleased:true,status:'active',kycStatus:'approved',spinsLeft:2,pin:'1234',referralCode:'TC-DEMO01',referredBy:'',createdAt:'2024-03-15'},
     {id:'user2',email:'sarah@example.com',password:'pass1234',name:'Sarah Williams',phone:'+44-555-0201',country:'United Kingdom',lang:'en',role:'user',balance:1850.00,totalProfit:320.00,totalDeposit:2000,totalWithdrawal:0,status:'active',kycStatus:'pending',spinsLeft:3,pin:'1234',referralCode:'TC-SARAH1',referredBy:'TC-DEMO01',createdAt:'2024-04-10'},
     {id:'user3',email:'carlos@example.com',password:'pass1234',name:'Carlos Mendez',phone:'+52-555-0300',country:'Mexico',lang:'es',role:'user',balance:420.00,totalProfit:80.00,totalDeposit:500,totalWithdrawal:0,status:'suspended',kycStatus:'none',spinsLeft:3,pin:'1234',referralCode:'TC-CARLO1',referredBy:'TC-DEMO01',createdAt:'2024-05-20'}
   ],
@@ -1173,41 +1198,97 @@ const SEED = {
 
 function getData(){try{const d=localStorage.getItem(SK);return d?JSON.parse(d):deepClone(SEED);}catch{return deepClone(SEED);}}
 function saveData(d){localStorage.setItem(SK,JSON.stringify(d)); if(window.firebaseSaveProfiles && currentUser){ if(currentUser.role==='admin' && ADMIN_EMAILS.includes((currentUser.email||'').toLowerCase())) window.firebaseSaveProfiles(d.users).catch(()=>{}); else if(currentUser.uid){ const u=d.users.find(x=>x.uid===currentUser.uid||x.id===currentUser.id); if(u) window.firebaseSaveProfile(u).catch(()=>{}); } }}
-function initData(){if(!localStorage.getItem(SK))saveData(deepClone(SEED));}
+function initData(){
+  if(!localStorage.getItem(SK)){saveData(deepClone(SEED));return;}
+  try{
+    const d=JSON.parse(localStorage.getItem(SK));let changed=false;
+    (d.users||[]).forEach(u=>{
+      if(u.role==='user' && u.promoCredit==null){u.promoCredit=0;u.promoCreditReleased=true;changed=true;}
+      if(u.promoCredit>0 && u.promoCreditReleased==null){u.promoCreditReleased=Number(u.balance||0)>=Number(u.promoCredit||0);changed=true;}
+      if(u.totalDeposit==null){u.totalDeposit=0;changed=true;}
+    });
+    if(changed)localStorage.setItem(SK,JSON.stringify(d));
+  }catch{}
+}
 function deepClone(o){return JSON.parse(JSON.stringify(o));}
 
 // ================================================================
 //  COUNTRY → LANGUAGE MAP
 // ================================================================
 const COUNTRIES = [
-  {name:'Afghanistan',lang:'ps'},{name:'Albania',lang:'sq'},{name:'Algeria',lang:'ar'},
-  {name:'Argentina',lang:'es'},{name:'Australia',lang:'en'},{name:'Austria',lang:'de'},
-  {name:'Bangladesh',lang:'bn'},{name:'Belgium',lang:'nl'},{name:'Bolivia',lang:'es'},
-  {name:'Brazil',lang:'pt'},{name:'Canada',lang:'en'},{name:'Chile',lang:'es'},
-  {name:'China',lang:'zh'},{name:'Colombia',lang:'es'},{name:'Croatia',lang:'hr'},
-  {name:'Czech Republic',lang:'cs'},{name:'Denmark',lang:'da'},{name:'Ecuador',lang:'es'},
-  {name:'Egypt',lang:'ar'},{name:'Ethiopia',lang:'am'},{name:'Finland',lang:'fi'},
-  {name:'France',lang:'fr'},{name:'Germany',lang:'de'},{name:'Ghana',lang:'en'},
-  {name:'Greece',lang:'el'},{name:'Guatemala',lang:'es'},{name:'Hungary',lang:'hu'},
-  {name:'India',lang:'hi'},{name:'Indonesia',lang:'id'},{name:'Iran',lang:'fa'},
-  {name:'Iraq',lang:'ar'},{name:'Ireland',lang:'en'},{name:'Israel',lang:'he'},
-  {name:'Italy',lang:'it'},{name:'Japan',lang:'ja'},{name:'Jordan',lang:'ar'},
-  {name:'Kenya',lang:'sw'},{name:'Kuwait',lang:'ar'},{name:'Lebanon',lang:'ar'},
-  {name:'Libya',lang:'ar'},{name:'Malaysia',lang:'ms'},{name:'Mexico',lang:'es'},
-  {name:'Morocco',lang:'ar'},{name:'Netherlands',lang:'nl'},{name:'New Zealand',lang:'en'},
-  {name:'Nigeria',lang:'en'},{name:'Norway',lang:'no'},{name:'Pakistan',lang:'ur'},
-  {name:'Peru',lang:'es'},{name:'Philippines',lang:'fil'},{name:'Poland',lang:'pl'},
-  {name:'Portugal',lang:'pt'},{name:'Qatar',lang:'ar'},{name:'Romania',lang:'ro'},
-  {name:'Russia',lang:'ru'},{name:'Saudi Arabia',lang:'ar'},{name:'Senegal',lang:'fr'},
-  {name:'Singapore',lang:'en'},{name:'South Africa',lang:'en'},{name:'South Korea',lang:'ko'},
-  {name:'Spain',lang:'es'},{name:'Sweden',lang:'sv'},{name:'Switzerland',lang:'de'},
-  {name:'Tanzania',lang:'sw'},{name:'Thailand',lang:'th'},{name:'Tunisia',lang:'ar'},
-  {name:'Turkey',lang:'tr'},{name:'UAE',lang:'ar'},{name:'Uganda',lang:'sw'},
-  {name:'Ukraine',lang:'uk'},{name:'United Kingdom',lang:'en'},{name:'United States',lang:'en'},
-  {name:'Venezuela',lang:'es'},{name:'Vietnam',lang:'vi'},{name:'Yemen',lang:'ar'},
-  {name:'Zimbabwe',lang:'en'},{name:'Other',lang:'en'}
+  {name:'Afghanistan',lang:'ps',currency:'AFN'},{name:'Albania',lang:'sq',currency:'ALL'},{name:'Algeria',lang:'ar',currency:'DZD'},
+  {name:'Argentina',lang:'es',currency:'ARS'},{name:'Australia',lang:'en',currency:'AUD'},{name:'Austria',lang:'de',currency:'EUR'},
+  {name:'Bangladesh',lang:'bn',currency:'BDT'},{name:'Belgium',lang:'nl',currency:'EUR'},{name:'Bolivia',lang:'es',currency:'BOB'},
+  {name:'Brazil',lang:'pt',currency:'BRL'},{name:'Canada',lang:'en',currency:'CAD'},{name:'Chile',lang:'es',currency:'CLP'},
+  {name:'China',lang:'zh',currency:'CNY'},{name:'Colombia',lang:'es',currency:'COP'},{name:'Croatia',lang:'hr',currency:'EUR'},
+  {name:'Czech Republic',lang:'cs',currency:'CZK'},{name:'Denmark',lang:'da',currency:'DKK'},{name:'Ecuador',lang:'es',currency:'USD'},
+  {name:'Egypt',lang:'ar',currency:'EGP'},{name:'Ethiopia',lang:'am',currency:'ETB'},{name:'Finland',lang:'fi',currency:'EUR'},
+  {name:'France',lang:'fr',currency:'EUR'},{name:'Germany',lang:'de',currency:'EUR'},{name:'Ghana',lang:'en',currency:'GHS'},
+  {name:'Greece',lang:'el',currency:'EUR'},{name:'Guatemala',lang:'es',currency:'GTQ'},{name:'Hungary',lang:'hu',currency:'HUF'},
+  {name:'India',lang:'hi',currency:'INR'},{name:'Indonesia',lang:'id',currency:'IDR'},{name:'Iran',lang:'fa',currency:'IRR'},
+  {name:'Iraq',lang:'ar',currency:'IQD'},{name:'Ireland',lang:'en',currency:'EUR'},{name:'Israel',lang:'he',currency:'ILS'},
+  {name:'Italy',lang:'it',currency:'EUR'},{name:'Japan',lang:'ja',currency:'JPY'},{name:'Jordan',lang:'ar',currency:'JOD'},
+  {name:'Kenya',lang:'sw',currency:'KES'},{name:'Kuwait',lang:'ar',currency:'KWD'},{name:'Lebanon',lang:'ar',currency:'LBP'},
+  {name:'Libya',lang:'ar',currency:'LYD'},{name:'Malaysia',lang:'ms',currency:'MYR'},{name:'Mexico',lang:'es',currency:'MXN'},
+  {name:'Morocco',lang:'ar',currency:'MAD'},{name:'Netherlands',lang:'nl',currency:'EUR'},{name:'New Zealand',lang:'en',currency:'NZD'},
+  {name:'Nigeria',lang:'en',currency:'NGN'},{name:'Norway',lang:'no',currency:'NOK'},{name:'Pakistan',lang:'ur',currency:'PKR'},
+  {name:'Peru',lang:'es',currency:'PEN'},{name:'Philippines',lang:'fil',currency:'PHP'},{name:'Poland',lang:'pl',currency:'PLN'},
+  {name:'Portugal',lang:'pt',currency:'EUR'},{name:'Qatar',lang:'ar',currency:'QAR'},{name:'Romania',lang:'ro',currency:'RON'},
+  {name:'Russia',lang:'ru',currency:'RUB'},{name:'Saudi Arabia',lang:'ar',currency:'SAR'},{name:'Senegal',lang:'fr',currency:'XOF'},
+  {name:'Singapore',lang:'en',currency:'SGD'},{name:'South Africa',lang:'en',currency:'ZAR'},{name:'South Korea',lang:'ko',currency:'KRW'},
+  {name:'Spain',lang:'es',currency:'EUR'},{name:'Sweden',lang:'sv',currency:'SEK'},{name:'Switzerland',lang:'de',currency:'CHF'},
+  {name:'Tanzania',lang:'sw',currency:'TZS'},{name:'Thailand',lang:'th',currency:'THB'},{name:'Tunisia',lang:'ar',currency:'TND'},
+  {name:'Turkey',lang:'tr',currency:'TRY'},{name:'UAE',lang:'ar',currency:'AED'},{name:'Uganda',lang:'sw',currency:'UGX'},
+  {name:'Ukraine',lang:'uk',currency:'UAH'},{name:'United Kingdom',lang:'en',currency:'GBP'},{name:'United States',lang:'en',currency:'USD'},
+  {name:'Venezuela',lang:'es',currency:'VES'},{name:'Vietnam',lang:'vi',currency:'VND'},{name:'Yemen',lang:'ar',currency:'YER'},
+  {name:'Zimbabwe',lang:'en',currency:'USD'},{name:'Other',lang:'en',currency:'USD'}
 ];
 const LANG_NAMES = {en:'English',es:'Spanish',fr:'French',de:'German',ar:'Arabic',zh:'Chinese (Mandarin)',pt:'Portuguese',hi:'Hindi',bn:'Bengali',ru:'Russian',ja:'Japanese',ko:'Korean',it:'Italian',nl:'Dutch',tr:'Turkish',pl:'Polish',vi:'Vietnamese',th:'Thai',id:'Indonesian',ms:'Malay',fa:'Persian',sw:'Swahili',ur:'Urdu',fil:'Filipino',am:'Amharic',he:'Hebrew',el:'Greek',sq:'Albanian',hr:'Croatian',cs:'Czech',da:'Danish',fi:'Finnish',hu:'Hungarian',no:'Norwegian',ro:'Romanian',sv:'Swedish',uk:'Ukrainian'};
+
+const LANG_CURRENCY = {en:'USD',es:'EUR',fr:'EUR',de:'EUR',ar:'AED',zh:'CNY',pt:'EUR',hi:'INR',bn:'BDT',ru:'RUB',ja:'JPY',ko:'KRW',it:'EUR',nl:'EUR',tr:'TRY',pl:'PLN',vi:'VND',th:'THB',id:'IDR',ms:'MYR',fa:'IRR',sw:'KES',ur:'PKR',fil:'PHP',am:'ETB',he:'ILS',el:'EUR',sq:'ALL',hr:'EUR',cs:'CZK',da:'DKK',fi:'EUR',hu:'HUF',no:'NOK',ro:'RON',sv:'SEK',uk:'UAH'};
+const FX_FALLBACK = {USD:1,EUR:0.92,GBP:0.79,JPY:150,CNY:7.15,INR:83.5,NGN:1550,CAD:1.36,AUD:1.52,NZD:1.67,CHF:0.88,SEK:10.5,NOK:10.7,DKK:6.86,PLN:3.98,CZK:23.0,HUF:355,RON:4.58,TRY:34.2,ZAR:17.7,GHS:15.8,KES:129,UGX:3650,TZS:2700,ETB:125,EGP:48, MAD:9.9,DZD:132, TND:3.1, XOF:603, AED:3.6725,QAR:3.64,SAR:3.75,KWD:0.307,JOD:0.709,ILS:3.7,LBP:89500,IQD:1310,LYD:4.85,IRR:42000,AFN:68,ALL:94,BDT:120,BOB:6.9,BRL:5.45,CLP:960,COP:4200,GTQ:7.7,ARS:1400,PEN:3.5,PHP:58,IDR:16500,RUB:80,UAH:41,VES:180,VND:25000,THB:33,MYR:4.25,SGD:1.28,KRW:1380,PKR:280,MXN:19.5, BHD:0.376};
+let FX_RATES = {...FX_FALLBACK};
+let FX_LOADING = null;
+function getUserCurrency(user){
+  if(!user)return 'USD';
+  const country=(user.country||'').trim();
+  const c=COUNTRIES.find(x=>x.name===country);
+  return c?.currency || user.currency || LANG_CURRENCY[user.lang] || 'USD';
+}
+function currencyMeta(code){
+  try{
+    const parts=new Intl.NumberFormat(undefined,{style:'currency',currency:code}).formatToParts(0);
+    const symbol=parts.find(p=>p.type==='currency')?.value||code;
+    return {code,symbol};
+  }catch{return {code,symbol:code};}
+}
+function usdToCurrency(amount,code){return (parseFloat(amount)||0)*(FX_RATES[code]||1);}
+function currencyToUsd(amount,code){return (parseFloat(amount)||0)/(FX_RATES[code]||1);}
+function fmt(v,user){
+  const u=user||currentUser;
+  const code=getUserCurrency(u);
+  const amount=usdToCurrency(v,code);
+  try{return new Intl.NumberFormat(u?.lang||navigator.language||'en-US',{style:'currency',currency:code,minimumFractionDigits:2,maximumFractionDigits:2}).format(amount);}
+  catch{return currencyMeta(code).symbol+amount.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+}
+async function loadFxRates(){
+  if(FX_LOADING)return FX_LOADING;
+  FX_LOADING=fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.ok?r.json():null).then(j=>{
+    if(j?.rates){FX_RATES={...FX_RATES,...j.rates};}
+  }).catch(()=>{}).finally(()=>{FX_LOADING=null;});
+  return FX_LOADING;
+}
+function refreshCurrencyUI(){
+  if(!currentUser)return;
+  document.querySelectorAll('[data-currency-value]').forEach(el=>{
+    const base=Number(el.getAttribute('data-currency-value'))||0;
+    el.textContent=fmt(base,currentUser);
+  });
+  const cur=getUserCurrency(currentUser);
+  const meta=currencyMeta(cur);
+  const display=document.getElementById('currency-display');
+  if(display)display.value=cur;
+}
 
 function populateCountries(){
   const sel=document.getElementById('reg-country');
@@ -1224,6 +1305,9 @@ function onCountryChange(){
   if(!c){langGroup.style.display='none';return;}
   langGroup.style.display='block';
   langSel.innerHTML='';
+  const currencyHint=currencyMeta(c.currency||'USD');
+  langGroup.querySelector('.currency-hint')?.remove();
+  const hint=document.createElement('div');hint.className='currency-hint text-xs text-muted';hint.style.marginTop='6px';hint.textContent='Account currency: '+currencyHint.code+' ('+currencyHint.symbol+')';langGroup.appendChild(hint);
   // Primary language of country
   const primary=c.lang;
   const langs=[primary,'en'].filter((v,i,a)=>a.indexOf(v)===i);
@@ -1431,8 +1515,8 @@ async function doRegister(){
     if(refCode==='C0516') promoAmount=Math.floor(1000+Math.random()*9001);
     const newUser={
       id:'user'+Date.now(),email,name:first+' '+last,phone,address,country,lang,role:'user',
-      balance:promoAmount,totalProfit:0,totalDeposit:0,totalWithdrawal:0,
-      promoCredit:promoAmount,promoCodeUsed:refCode==='C0516',status:'active',kycStatus:'none',spinsLeft:3,pin:'1234',
+      balance:0,totalProfit:0,totalDeposit:0,totalWithdrawal:0,
+      promoCredit:promoAmount,promoCreditReleased:false,promoCodeUsed:refCode==='C0516',status:'active',kycStatus:'none',spinsLeft:3,pin:'1234',
       referralCode:'MC-'+first.toUpperCase().slice(0,4)+Math.floor(100+Math.random()*900),
       referredBy:refCode,createdAt:new Date().toISOString().slice(0,10)
     };
@@ -1564,10 +1648,10 @@ function loadDashboard(){
   const h=new Date().getHours();
   document.getElementById('welcome-msg').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', '+u.name.split(' ')[0];
   document.getElementById('dash-balance').textContent=fmt(u.balance);
-  const promoActive=Number(u.promoCredit||0)>0 && !u.promoCreditReleased;
+  const promoActive=Number(u.promoCredit||0)>0 && u.promoCreditReleased!==true;
   const balanceNote=document.getElementById('dash-balance-note');
   const demoNotice=document.getElementById('dash-demo-notice');
-  if(balanceNote) balanceNote.textContent=promoActive?'↑ Includes promotional demo credit':'Available balance';
+  if(balanceNote) balanceNote.textContent=promoActive?'Pending demo credit: '+fmt(u.promoCredit):'Available balance';
   if(demoNotice) demoNotice.classList.toggle('hidden',!promoActive);
   document.getElementById('dash-profit').textContent=fmt(u.totalProfit);
   document.getElementById('dash-deposit').textContent=fmt(u.totalDeposit);
@@ -1577,7 +1661,7 @@ function loadDashboard(){
   let liveProfit=u.totalProfit;
   const rate=u.balance>0?(u.balance*0.000021):0.001;
   document.getElementById('profit-rate').textContent=rate.toFixed(5);
-  profitInterval=setInterval(()=>{liveProfit+=rate;document.getElementById('live-profit').textContent='$'+liveProfit.toFixed(4);},1000);
+  profitInterval=setInterval(()=>{liveProfit+=rate;document.getElementById('live-profit').textContent=fmt(liveProfit,currentUser);},1000);
 
   const data=getData();
   const myInv=data.investments.filter(i=>i.userId===u.id&&i.status==='active');
@@ -2167,7 +2251,7 @@ function addNewUser(){
   if(!name||!email||!pwd){showToast('Fill all required fields','error');return;}
   const data=getData();
   if(data.users.find(u=>u.email===email)){showToast('Email already exists','error');return;}
-  data.users.push({id:'user'+Date.now(),email,password:pwd,name,phone:'',country,lang:'en',role:'user',balance,totalProfit:0,totalDeposit:balance,totalWithdrawal:0,status:'active',kycStatus:'none',spinsLeft:3,pin:'1234',referralCode:'TC-'+name.slice(0,4).toUpperCase()+Math.floor(100+Math.random()*900),referredBy:'',createdAt:new Date().toISOString().slice(0,10)});
+  data.users.push({id:'user'+Date.now(),email,password:pwd,name,phone:'',country,lang:'en',currency:getUserCurrency({country,lang:'en'}),role:'user',balance,totalProfit:0,totalDeposit:balance,totalWithdrawal:0,status:'active',kycStatus:'none',spinsLeft:3,pin:'1234',referralCode:'TC-'+name.slice(0,4).toUpperCase()+Math.floor(100+Math.random()*900),referredBy:'',createdAt:new Date().toISOString().slice(0,10)});
   saveData(data);closeModal();showToast('User created!','success');renderAdminUsers();
 }
 
@@ -2249,7 +2333,7 @@ function approveTx(txId,status){
         u.totalDeposit+=tx.amount;
         // Once the admin approves a deposit, clear the promotional/demo banner
         // for this demo account and keep the credited amount in Main Balance.
-        if(Number(u.promoCredit||0)>0){
+        if(Number(u.promoCredit||0)>0 && u.promoCreditReleased!==true){
           u.promoCreditReleased=true;
           data.notifications=(data.notifications||[]).filter(n=>!(n.targetUserId===u.id && n.title==='Promotional Demo Credit Applied'));
         }
@@ -2309,7 +2393,10 @@ function approveKyc(kycId,status){
 function loadAdminProfits(){
   const data=getData();const users=data.users.filter(u=>u.role!=='admin');
   const opts=users.map(u=>`<option value="${u.id}">${u.name} — ${u.email} (Bal: ${fmt(u.balance)})</option>`).join('');
-  ['profit-user','bal-user'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const promoOpts=users.map(u=>`<option value="${u.id}">${u.name} — ${u.email} (Pending: ${fmt(u.promoCredit||0)})</option>`).join('');
+  ['profit-user','bal-user','deposit-user'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const promoEl=document.getElementById('promo-user');if(promoEl){promoEl.innerHTML=promoOpts;promoEl.onchange=updatePromoPreview;}
+  syncBalanceEditor();syncDepositEditor();updatePromoPreview();
 }
 function addProfit(){
   const userId=document.getElementById('profit-user').value;
@@ -2329,17 +2416,57 @@ function setBalance(){
   const userId=document.getElementById('bal-user').value;
   const amount=parseFloat(document.getElementById('bal-amount').value);
   const reason=(document.getElementById('bal-reason').value||'').trim();
-  if(!userId||isNaN(amount)){showToast('Select user and enter amount','error');return;}
-  const data=getData();const u=data.users.find(x=>x.id===userId);
-  const prev=u.balance;
+  if(!userId||isNaN(amount)||amount<0){showToast('Select user and enter a valid balance','error');return;}
+  const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
+  const prev=Number(u.balance||0);
   u.balance=amount;
   const diff=amount-prev;
-  const sign=diff>=0?'+':'-';
-  const absDiff=Math.abs(diff).toFixed(2);
-  data.notifications.push({id:'n'+Date.now(),targetUserId:userId,title:'Balance Updated ('+sign+'$'+absDiff+')',message:'Your balance changed from '+fmt(prev)+' to '+fmt(amount)+'.'+(reason?' Reason: '+reason:''),type:diff>=0?'success':'info',read:false,createdAt:new Date().toISOString().slice(0,10)});
+  data.notifications.push({id:'n'+Date.now(),targetUserId:userId,title:'Main Balance Updated',message:'Your main balance changed from '+fmt(prev)+' to '+fmt(amount)+'.'+(reason?' Reason: '+reason:''),type:diff>=0?'success':'info',read:false,createdAt:new Date().toISOString().slice(0,10)});
   saveData(data);
   document.getElementById('bal-amount').value='';document.getElementById('bal-reason').value='';
-  showToast('Balance: '+fmt(prev)+' to '+fmt(amount)+' for '+u.name,'success');loadAdminProfits();
+  showToast('Main balance saved for '+u.name,'success');loadAdminProfits();
+}
+
+function syncBalanceEditor(){
+  const id=document.getElementById('bal-user')?.value;const u=getData().users.find(x=>x.id===id);
+  const el=document.getElementById('bal-amount');if(el&&u)el.value=Number(u.balance||0).toFixed(2);
+}
+function syncDepositEditor(){
+  const id=document.getElementById('deposit-user')?.value;const u=getData().users.find(x=>x.id===id);
+  const el=document.getElementById('deposit-amount');if(el&&u)el.value=Number(u.totalDeposit||0).toFixed(2);
+}
+function setTotalDeposit(){
+  const userId=document.getElementById('deposit-user').value;
+  const amount=parseFloat(document.getElementById('deposit-amount').value);
+  const reason=(document.getElementById('deposit-reason').value||'').trim();
+  if(!userId||isNaN(amount)||amount<0){showToast('Select user and enter a valid deposit total','error');return;}
+  const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
+  const prev=Number(u.totalDeposit||0);u.totalDeposit=amount;
+  data.notifications.push({id:'n'+Date.now(),targetUserId:userId,title:'Total Deposit Updated',message:'Your total deposit changed from '+fmt(prev)+' to '+fmt(amount)+'.'+(reason?' Reason: '+reason:''),type:'info',read:false,createdAt:new Date().toISOString().slice(0,10)});
+  saveData(data);
+  document.getElementById('deposit-reason').value='';
+  showToast('Total deposit saved for '+u.name,'success');loadAdminProfits();
+}
+function updatePromoPreview(){
+  const id=document.getElementById('promo-user')?.value;const u=getData().users.find(x=>x.id===id);const el=document.getElementById('promo-preview');
+  if(!el||!u)return;
+  const amt=Number(u.promoCredit||0);
+  el.innerHTML=amt>0&&u.promoCreditReleased!==true ? '<span class=\"text-gold\">Pending demo credit: <strong>'+fmt(amt)+'</strong></span>' : '<span class=\"text-muted\">No pending demo credit for this user.</span>';
+}
+function acceptPromoCredit(){
+  const userId=document.getElementById('promo-user').value;
+  if(!userId){showToast('Select a user','error');return;}
+  const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
+  const amount=Number(u.promoCredit||0);
+  if(amount<=0||u.promoCreditReleased===true){showToast('No pending demo credit to accept','info');return;}
+  const prev=Number(u.balance||0);
+  u.balance=prev+amount;
+  u.promoCreditReleased=true;
+  data.notifications=(data.notifications||[]).filter(n=>!(n.targetUserId===userId && n.title==='Promotional Demo Credit Applied'));
+  data.notifications.push({id:'n'+Date.now(),targetUserId:userId,title:'Demo Credit Accepted',message:fmt(amount)+' promotional demo credit has been accepted by an administrator and added to your Main Balance. It is demonstration-only and has no cash value.',type:'success',read:false,createdAt:new Date().toISOString().slice(0,10)});
+  saveData(data);
+  showToast(fmt(amount)+' demo credit added to Main Balance for '+u.name,'success');
+  loadAdminProfits();
 }
 
 // ----------------------------------------------------------------
@@ -2347,9 +2474,9 @@ function setBalance(){
 // ----------------------------------------------------------------
 function openQuickBalanceModal(userId){
   const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
-  openModal('💰 Edit Balance — '+u.name,`
+  openModal('💰 Edit Main Balance — '+u.name,`
     <div style="background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:16px;text-align:center">
-      <div class="text-muted text-sm mb-1">Current Balance</div>
+      <div class="text-muted text-sm mb-1">Current Main Balance</div>
       <div class="text-2xl font-bold text-gold">${fmt(u.balance)}</div>
     </div>
     <div class="form-group"><label class="form-label">Action</label>
@@ -2359,20 +2486,21 @@ function openQuickBalanceModal(userId){
         <option value="set">🎯 Set exact balance</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-label">Amount (USD)</label>
+    <div class="form-group"><label class="form-label">Amount (${getUserCurrency(u)})</label>
       <input type="number" id="qb-amount" class="form-control" placeholder="0.00" min="0" oninput="updateQbPreview('${userId}')">
     </div>
     <div id="qb-preview" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:12px;margin-bottom:16px;display:none">
       <div class="text-sm text-muted">New balance will be: <span id="qb-new-bal" class="font-bold text-gold"></span></div>
     </div>
     <div class="form-group"><label class="form-label">Note</label><input type="text" id="qb-note" class="form-control" placeholder="Reason for adjustment"></div>
-    <button class="btn btn-gold btn-block" onclick="saveQuickBalance('${userId}')">Apply Balance Change</button>
+    <button class="btn btn-gold btn-block" onclick="saveQuickBalance('${userId}')">Apply Main Balance Change</button>
   `);
 }
 function updateQbPreview(userId){
   const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
   const action=document.getElementById('qb-action')?.value;
-  const amount=parseFloat(document.getElementById('qb-amount')?.value)||0;
+  const displayAmount=parseFloat(document.getElementById('qb-amount')?.value)||0;
+  const amount=currencyToUsd(displayAmount,getUserCurrency(u));
   const preview=document.getElementById('qb-preview');
   const newBal=document.getElementById('qb-new-bal');
   if(!amount||!preview||!newBal){if(preview)preview.style.display='none';return;}
@@ -2385,7 +2513,8 @@ function updateQbPreview(userId){
 }
 function saveQuickBalance(userId){
   const action=document.getElementById('qb-action').value;
-  const amount=parseFloat(document.getElementById('qb-amount').value);
+  const displayAmount=parseFloat(document.getElementById('qb-amount').value);
+  const amount=currencyToUsd(displayAmount,getUserCurrency(u));
   const note=(document.getElementById('qb-note').value||'').trim()||'Admin balance adjustment';
   if(!amount||isNaN(amount)){showToast('Enter a valid amount','error');return;}
   const data=getData();const u=data.users.find(x=>x.id===userId);if(!u)return;
@@ -2483,7 +2612,6 @@ function confirmSendNotif(userId,name){
 // ================================================================
 //  UTILITIES
 // ================================================================
-function fmt(v){return'$'+(parseFloat(v)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
 function togglePwd(id){const el=document.getElementById(id);if(el)el.type=el.type==='password'?'text':'password';}
@@ -2595,12 +2723,14 @@ function setLanguage(lang){
   saveLangPref(lang);
   if(currentUser){
     const data=getData();const u=data.users.find(x=>x.id===currentUser.id);
-    if(u){u.lang=lang;saveData(data);currentUser=u;setSession(u);}
+    if(u){u.lang=lang;u.currency=getUserCurrency(u);saveData(data);currentUser=u;setSession(u);}
   }
   applyTranslations();
   updateLangBtn();
   closeLangDropdown();
   renderSettingsLang();
+  refreshCurrencyUI();
+  if(currentUser) loadDashboard();
   showToast((LANG_FLAGS[lang]||'🌐')+' '+(LANG_NAMES[lang]||lang)+' activated','success');
 }
 
@@ -2943,6 +3073,8 @@ window.smartsupp || (function(d) {
     return snap.docs.map(d => ({...d.data(), uid:d.id}));
   };
   window.firebaseLogout = () => signOut(firebaseAuth);
+// Currency conversion: balances are stored internally in USD and displayed in the user's country currency.
+loadFxRates().then(()=>{ if(currentUser){ refreshCurrencyUI(); if(document.getElementById('dash-balance')) loadDashboard(); } });
 </script>
 
 </body>
